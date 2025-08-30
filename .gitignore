@@ -13,7 +13,7 @@ media
 *.pyc
 __pycache__/
 
-.migrations
+**/migrations/
 # If you are using PyCharm # 
 # User-specific stuff
 .idea/**/workspace.xml

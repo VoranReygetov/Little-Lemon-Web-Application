@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     # The settings for app updated for the Graded assessment
     'restaurant',
     'authorization',
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "djoser",
 ]
 
 MIDDLEWARE = [
@@ -79,6 +82,30 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'littlelemon.wsgi.application'
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.AllowAny",
+    ),
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "5/minute",
+        "user": "25/hour",
+    },
+}
+
+DJOSER = {
+    "USER_ID_FIELD":"username",
+    "LOGIN_FIELD": "username", 
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "SERIALIZERS": {},
+}
 
 
 # Database
@@ -134,6 +161,14 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=3), 
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 
 # Static files (CSS, JavaScript, Images)
