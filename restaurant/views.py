@@ -8,7 +8,8 @@ from datetime import datetime
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 # Create your views here.
 def home(request):
@@ -18,11 +19,15 @@ def about(request):
     return render(request, 'about.html')
 
 def reservations(request):
-    date = request.GET.get('date',datetime.today().date())
-    bookings = Booking.objects.all()
-    booking_json = serializers.serialize('json', bookings)
+    booking_json = {"bookings":"No bookings"}
+
+    if request.user.is_authenticated:
+        bookings = Booking.objects.filter(user=request.user)
+        booking_json = serializers.serialize('json', bookings)
+        
     return render(request, 'bookings.html',{"bookings":booking_json})
 
+@login_required
 def book(request):
     form = BookingForm()
     if request.method == 'POST':
@@ -47,24 +52,30 @@ def display_menu_item(request, pk=None):
     return render(request, 'menu_item.html', {"menu_item": menu_item}) 
 
 @csrf_exempt
+@login_required
 def bookings(request):
     if request.method == 'POST':
-        data = json.load(request)
-        exist = Booking.objects.filter(reservation_date=data['reservation_date']).filter(
-            reservation_slot=data['reservation_slot']).exists()
-        if exist==False:
+        data = json.loads(request.body)
+
+        exist = Booking.objects.filter(
+            reservation_date=data['reservation_date'],
+            reservation_slot=data['reservation_slot'],
+            user=request.user
+        ).exists()
+
+        if not exist:
             booking = Booking(
-                first_name=data['first_name'],
+                user=request.user,                          
+                first_name=data['first_name'],              
                 reservation_date=data['reservation_date'],
                 reservation_slot=data['reservation_slot'],
             )
             booking.save()
         else:
-            return HttpResponse("{'error':1}", content_type='application/json')
-    
-    date = request.GET.get('date',datetime.today().date())
+            return JsonResponse({"error": 1})
 
-    bookings = Booking.objects.all().filter(reservation_date=date)
+    date = request.GET.get('date', datetime.today().date())
+    bookings = Booking.objects.filter(reservation_date=date, user=request.user)
     booking_json = serializers.serialize('json', bookings)
 
     return HttpResponse(booking_json, content_type='application/json')

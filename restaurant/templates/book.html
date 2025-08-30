@@ -14,7 +14,12 @@
             <!-- {% csrf_token %} -->
             <p>
               <label for="first_name">Name:</label>
-              <input type="text" placeholder="Your Name" maxlength="200" required="" id="first_name">
+              <input type="text" 
+                      placeholder="Your Name" 
+                      maxlength="200" 
+                      required 
+                      id="first_name" 
+                      value="{{ user.username }}">
             </p>
             <p>
             <!-- Step 9: Part one -->
@@ -35,17 +40,13 @@
 
       <!--Begin col-->
       <div class="column">
-        <h2>Bookings For <span id="today"></span></h2>
+        <h2>Your bookings For <span id="today"></span></h2>
         <div id="bookings">
         </div>
       </div>
       <!--End col-->
     </div>
     <!--End row-->
-
-
-
-
   </article>
 </section>
 <script>
