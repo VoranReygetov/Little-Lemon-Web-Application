@@ -12,7 +12,7 @@ media
 # Python bytecode
 *.pyc
 __pycache__/
-
+./__pycache__/
 **/migrations/
 # If you are using PyCharm # 
 # User-specific stuff
