@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<section>
+  <article>
+    <h1>Little Lemon API Documentation</h1>
+    <p>
+      Welcome to the Little Lemon API! Below you’ll find the available endpoints
+      and how to use authentication.
+    </p>
+
+    <!-- Authentication Section -->
+    <h2>🔑 Authentication</h2>
+    <p>
+      We use <strong>JWT (JSON Web Tokens)</strong> for authentication.  
+      All endpoints live under <code>/api/</code>.
+    </p>
+    <ul>
+      <li><code>POST /api/auth/users/</code> – Register a new user</li>
+      <li><code>POST /api/auth/jwt/create/</code> – Get access + refresh tokens</li>
+      <li><code>POST /api/auth/jwt/refresh/</code> – Refresh your access token</li>
+      <li><code>POST /api/auth/jwt/verify/</code> – Verify a token</li>
+      <li><code>GET /api/auth/users/me/</code> – Get the current logged-in user</li>
+    </ul>
+    <pre><code>Authorization: Bearer &lt;your_access_token&gt;</code></pre>
+
+    <!-- Menus -->
+    <h2>📋 Menus</h2>
+    <ul>
+      <li><code>GET /api/menus/</code> – List all menus (anyone)</li>
+      <li><code>GET /api/menus/&lt;id&gt;/</code> – Retrieve a specific menu</li>
+      <li><code>POST /api/menus/</code> – Create a menu (superuser only)</li>
+      <li><code>PUT /api/menus/&lt;id&gt;/</code> – Update a menu (superuser only)</li>
+      <li><code>DELETE /api/menus/&lt;id&gt;/</code> – Delete a menu (superuser only)</li>
+    </ul>
+
+    <!-- Bookings -->
+    <h2>📅 Reservations</h2>
+    <ul>
+      <li><code>GET /api/bookings/</code> – List your bookings (superuser sees all)</li>
+      <li><code>POST /api/bookings/</code> – Create or update your booking</li>
+      <li><code>GET /api/bookings/&lt;id&gt;/</code> – Retrieve a specific booking</li>
+      <li><code>PUT /api/bookings/&lt;id&gt;/</code> – Update your booking</li>
+      <li><code>DELETE /api/bookings/&lt;id&gt;/</code> – Cancel your booking</li>
+    </ul>
+
+    <!-- Example -->
+    <h2>💡 Example: Create a Booking</h2>
+    <pre><code>
+POST /api/bookings/
+Authorization: Bearer &lt;your_access_token&gt;
+Content-Type: application/json
+
+{
+  "first_name": "Alice",
+  "reservation_date": "2025-09-10",
+  "reservation_slot": 2
+}
+    </code></pre>
+  </article>
+</section>
+{% endblock %}

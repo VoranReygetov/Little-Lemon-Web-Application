@@ -5,14 +5,15 @@
 __pycache__
 db.sqlite3
 media
-
+staticfiles
+*.migrations
 # Backup files # 
 *.bak 
 
 # Python bytecode
 *.pyc
 __pycache__/
-./__pycache__/
+*.__pycache__
 **/migrations/
 # If you are using PyCharm # 
 # User-specific stuff
