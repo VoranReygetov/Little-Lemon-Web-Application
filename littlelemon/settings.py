@@ -9,32 +9,28 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import environ
+from dotenv import load_dotenv
 from pathlib import Path
 import os
 
+load_dotenv('.env.local')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('DJANGO_SECRET_KEY')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DJANGO_DEBUG', default=True)
+DEBUG = os.getenv('DJANGO_DEBUG', default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
 
-
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "https://127.0.0.1").split(',')
 # Application definition
 
 INSTALLED_APPS = [
@@ -113,19 +109,19 @@ DJOSER = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('MYSQL_DB_NAME'),
-        'USER': env('MYSQL_DB_USER'),
-        'PASSWORD': env('MYSQL_DB_PASSWORD'),
-        'HOST': env('MYSQL_DB_HOST'),
-        'PORT': env('MYSQL_DB_PORT'),
+        'ENGINE': 'django.db.backends.{}'.format(os.getenv('DATABASE_ENGINE', 'sqlite3')),
+        'NAME': os.getenv('MYSQL_DATABASE', 'reservations'),
+        'USER': os.getenv('MYSQL_USER', 'django_user'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'password'),
+        'HOST': os.getenv('MYSQL_HOST', '127.0.0.1'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
     },
     'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / env('SQLITE_DB_NAME', default='db.sqlite3'),
+        'NAME': BASE_DIR / os.getenv('SQLITE_DB_NAME', default='db.sqlite3'),
     },
 }
 
@@ -175,10 +171,12 @@ SIMPLE_JWT = {
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 # The settings for static files have been updated for the Graded assessment
-STATIC_URL = 'restaurant/static/'
+STATIC_URL = '/static/'  # URL path for static files
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Where collectstatic will put them
 
 STATICFILES_DIRS = [
-    "restaurant/static",
+    BASE_DIR / 'restaurant' / 'static',  # optional extra static dirs
 ]
 
 # Default primary key field type

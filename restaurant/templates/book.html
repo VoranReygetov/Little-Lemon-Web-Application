@@ -52,11 +52,13 @@
 <script>
 
   const date = new Date()
-  document.getElementById('reservation_date').value = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate().toString().padStart(2, "0")}`
+  const yyyy = date.getFullYear()
+  const mm = String(date.getMonth() + 1).padStart(2, '0')  // zero-pad month
+  const dd = String(date.getDate()).padStart(2, '0')       // zero-pad day
+  document.getElementById('reservation_date').value = `${yyyy}-${mm}-${dd}`
 
-  console.log(document.getElementById('reservation_date').value)
+  console.log(document.getElementById('reservation_date').value)  // should print YYYY-MM-DD
   getBookings()
-
 
   /*  Step 10: Part two */
 

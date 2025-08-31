@@ -57,24 +57,30 @@ def bookings(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        exist = Booking.objects.filter(
+        # Check if the user already has a booking for the same day
+        booking, created = Booking.objects.update_or_create(
+            user=request.user,
             reservation_date=data['reservation_date'],
-            reservation_slot=data['reservation_slot'],
-            user=request.user
-        ).exists()
+            defaults={
+                'first_name': data['first_name'],
+                'reservation_slot': data['reservation_slot'],
+            }
+        )
+        # Return info if it was updated or created
+        return JsonResponse({
+            "success": 1,
+            "updated": not created,
+            "reservation_slot": booking.reservation_slot
+        })
 
-        if not exist:
-            booking = Booking(
-                user=request.user,                          
-                first_name=data['first_name'],              
-                reservation_date=data['reservation_date'],
-                reservation_slot=data['reservation_slot'],
-            )
-            booking.save()
-        else:
-            return JsonResponse({"error": 1})
-
-    date = request.GET.get('date', datetime.today().date())
+    # GET request
+    date = request.GET.get('date')
+    if not date:
+        date = datetime.today().date()
+    else:
+        # Convert string to date if necessary
+        date = datetime.strptime(date, '%Y-%m-%d').date()
+        
     bookings = Booking.objects.filter(reservation_date=date, user=request.user)
     booking_json = serializers.serialize('json', bookings)
 
