@@ -20,7 +20,8 @@ steps:
           --image ${_IMAGE_NAME} \
           --set-cloudsql-instances ${_CLOUD_SQL_CONNECTION_NAME} \
           --set-env-vars SETTINGS_NAME=${_SECRET_SETTINGS_NAME} \
-          --command "python manage.py migrate --noinput" \
+          --command python \
+          --args "manage.py,migrate,--noinput" \
           --execute-now
 
 
@@ -37,7 +38,8 @@ steps:
           --set-env-vars SETTINGS_NAME=${_SECRET_SETTINGS_NAME} \
           --set-env-vars DJANGO_SUPERUSER_EMAIL=${_ADMIN_EMAIL} \
           --set-secrets DJANGO_SUPERUSER_PASSWORD=${_ADMIN_PASSWORD_NAME}:latest \
-          --command "python manage.py createsuperuser --username admin --noinput" \
+          --command python \
+          --args "manage.py,createsuperuser,--username=admin,--noinput" \
           --execute-now
 
 
