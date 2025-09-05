@@ -1,5 +1,6 @@
 # Use a slim Python base image
-FROM python:3.11-slim
+ARG PYTHON_VERSION=3.11.9
+FROM python:${PYTHON_VERSION}-slim AS builder
 
 # Install system dependencies required by mysqlclient
 RUN apt-get update && apt-get install -y \
